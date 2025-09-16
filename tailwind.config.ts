@@ -47,6 +47,20 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Timer-specific colors
+        timer: {
+          bg: "hsl(var(--timer-bg))",
+          text: "hsl(var(--timer-text))",
+          accent: "hsl(var(--timer-accent))",
+          warning: "hsl(var(--timer-warning))",
+          danger: "hsl(var(--timer-danger))",
+        },
+        // Admin panel colors
+        admin: {
+          bg: "hsl(var(--admin-bg))",
+          card: "hsl(var(--admin-card))",
+          border: "hsl(var(--admin-border))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
