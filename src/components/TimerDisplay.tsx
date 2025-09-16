@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TimerState, DisplaySettings, MessageData } from '@/types/timekeeper';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, Settings } from 'lucide-react';
 
 interface TimerDisplayProps {
   timer: TimerState;
@@ -10,7 +13,9 @@ interface TimerDisplayProps {
 }
 
 export const TimerDisplay = ({ timer, display, messages, className }: TimerDisplayProps) => {
+  const navigate = useNavigate();
   const [mounted, setMounted] = useState(false);
+  const [showControls, setShowControls] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -43,9 +48,34 @@ export const TimerDisplay = ({ timer, display, messages, className }: TimerDispl
   if (display.mode === 'message') {
     return (
       <div 
-        className={cn("flex h-screen items-center justify-center p-8", className)}
+        className={cn("flex h-screen items-center justify-center p-8 relative", className)}
         style={dynamicStyles}
+        onDoubleClick={() => setShowControls(!showControls)}
       >
+        {/* Navigation Controls */}
+        {showControls && (
+          <div className="absolute top-4 left-4 flex gap-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate('/')}
+              style={{ backgroundColor: display.textColor, color: display.backgroundColor }}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Beranda
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate('/admin?view=control')}
+              style={{ backgroundColor: display.textColor, color: display.backgroundColor }}
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              Admin
+            </Button>
+          </div>
+        )}
+        
         <div className="max-w-6xl text-center">
           <div 
             className="rounded-3xl border-4 p-12"
@@ -62,15 +92,45 @@ export const TimerDisplay = ({ timer, display, messages, className }: TimerDispl
             </p>
           </div>
         </div>
+        
+        {showControls && (
+          <div className="absolute bottom-4 left-4 text-xs opacity-60" style={{ color: display.textColor }}>
+            Double-click to hide controls
+          </div>
+        )}
       </div>
     );
   }
 
   return (
     <div 
-      className={cn("flex h-screen flex-col items-center justify-center p-8", className)}
+      className={cn("flex h-screen flex-col items-center justify-center p-8 relative", className)}
       style={dynamicStyles}
+      onDoubleClick={() => setShowControls(!showControls)}
     >
+      {/* Navigation Controls */}
+      {showControls && (
+        <div className="absolute top-4 left-4 flex gap-2">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => navigate('/')}
+            style={{ backgroundColor: display.textColor, color: display.backgroundColor }}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Beranda
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => navigate('/admin?view=control')}
+            style={{ backgroundColor: display.textColor, color: display.backgroundColor }}
+          >
+            <Settings className="h-4 w-4 mr-2" />
+            Admin
+          </Button>
+        </div>
+      )}
       {/* Message Box */}
       <div className="mb-16 max-w-4xl">
         <div 
@@ -132,6 +192,13 @@ export const TimerDisplay = ({ timer, display, messages, className }: TimerDispl
             className="h-6 w-6 animate-pulse rounded-full"
             style={{ backgroundColor: display.textColor }}
           />
+        </div>
+      )}
+      
+      {/* Help Text */}
+      {showControls && (
+        <div className="absolute bottom-4 left-4 text-xs opacity-60" style={{ color: display.textColor }}>
+          Double-click to hide controls
         </div>
       )}
     </div>

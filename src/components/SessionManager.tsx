@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { TimerSession } from '@/types/timekeeper';
-import { Plus, Play, Trash2, Calendar } from 'lucide-react';
+import { Plus, Play, Trash2, Calendar, ArrowLeft } from 'lucide-react';
 
 interface SessionManagerProps {
   sessions: TimerSession[];
@@ -21,6 +22,7 @@ export const SessionManager = ({
   onSelectSession,
   onDeleteSession,
 }: SessionManagerProps) => {
+  const navigate = useNavigate();
   const [newSessionName, setNewSessionName] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
 
@@ -46,13 +48,23 @@ export const SessionManager = ({
     <div className="min-h-screen bg-admin-bg p-6">
       <div className="mx-auto max-w-4xl">
         <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-white">Session Manager</h1>
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate('/')}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Kembali
+            </Button>
+            <h1 className="text-3xl font-bold text-white">📋 Session Manager</h1>
+          </div>
           <Button
             onClick={() => setShowCreateForm(true)}
             className="flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
-            New Session
+            Buat Sesi Baru
           </Button>
         </div>
 

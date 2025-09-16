@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { TimerSession } from '@/types/timekeeper';
 import { useTimer } from '@/hooks/useTimer';
-import { Play, Pause, RotateCcw, Monitor, MessageSquare } from 'lucide-react';
+import { Play, Pause, RotateCcw, Monitor, MessageSquare, ArrowLeft } from 'lucide-react';
 
 interface AdminPanelProps {
   session: TimerSession | null;
@@ -22,7 +23,9 @@ export const AdminPanel = ({
   onDisplayUpdate, 
   onMessagesUpdate 
 }: AdminPanelProps) => {
+  const navigate = useNavigate();
   const [newDuration, setNewDuration] = useState('5');
+  const [quickDurations] = useState([1, 3, 5, 10, 15, 20, 30, 45, 60]);
 
   const { startTimer, pauseTimer, resetTimer, setTimer } = useTimer(
     session?.timer || { minutes: 5, seconds: 0, isRunning: false, totalMinutes: 5 },
@@ -54,7 +57,17 @@ export const AdminPanel = ({
   return (
     <div className="min-h-screen bg-admin-bg p-6">
       <div className="mx-auto max-w-4xl space-y-6">
-        <h1 className="text-3xl font-bold text-white mb-8">Admin Panel - {session.name}</h1>
+        <div className="flex items-center gap-4 mb-8">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => navigate('/')}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Kembali
+          </Button>
+          <h1 className="text-3xl font-bold text-white">⚙️ Admin Panel - {session.name}</h1>
+        </div>
         
         <div className="grid gap-6 md:grid-cols-2">
           {/* Timer Controls */}
@@ -89,20 +102,42 @@ export const AdminPanel = ({
                 </Button>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-gray-300">Set Duration (minutes)</Label>
+              <div className="space-y-3">
+                <Label className="text-gray-300">⏱️ Pengaturan Durasi Timer</Label>
+                
+                {/* Quick Duration Buttons */}
+                <div className="grid grid-cols-3 gap-2">
+                  {quickDurations.map((minutes) => (
+                    <Button
+                      key={minutes}
+                      onClick={() => setTimer(minutes)}
+                      variant={session.timer.totalMinutes === minutes ? "default" : "outline"}
+                      size="sm"
+                      className="text-xs"
+                    >
+                      {minutes}m
+                    </Button>
+                  ))}
+                </div>
+                
+                {/* Custom Duration */}
                 <div className="flex gap-2">
                   <Input
                     type="number"
                     value={newDuration}
                     onChange={(e) => setNewDuration(e.target.value)}
                     min="1"
-                    max="60"
+                    max="120"
+                    placeholder="Custom"
                     className="bg-admin-bg border-admin-border text-white"
                   />
                   <Button onClick={handleDurationChange} variant="outline">
-                    Set
+                    Set Custom
                   </Button>
+                </div>
+                
+                <div className="text-xs text-gray-500">
+                  Durasi saat ini: {session.timer.totalMinutes} menit
                 </div>
               </div>
             </CardContent>
